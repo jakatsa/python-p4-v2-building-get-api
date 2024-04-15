@@ -14,7 +14,7 @@ metadata = MetaData(
 db = SQLAlchemy(metadata=metadata)
 
 
-class Game(db.Model):
+class Game(db.Model, SerializerMixin):
     __tablename__ = "games"
 
     id = db.Column(db.Integer, primary_key=True)
@@ -30,36 +30,4 @@ class Game(db.Model):
     def __repr__(self):
         return f"<Game {self.title} for {self.platform}>"
 
-
-class Review(db.Model):
-    __tablename__ = "reviews"
-
-    id = db.Column(db.Integer, primary_key=True)
-    score = db.Column(db.Integer)
-    comment = db.Column(db.String)
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
-    game_id = db.Column(db.Integer, db.ForeignKey("games.id"))
-    user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
-
-    game = db.relationship("Game", back_populates="reviews")
-    user = db.relationship("User", back_populates="reviews")
-
-    def __repr__(self):
-        return f"<Review ({self.id}) of {self.game}: {self.score}/10>"
-
-
-class User(db.Model):
-    __tablename__ = "users"
-
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-
-    created_at = db.Column(db.DateTime, server_default=db.func.now())
-    updated_at = db.Column(db.DateTime, onupdate=db.func.now())
-
-    reviews = db.relationship("Review", back_populates="user")
-
-    def __repr__(self):
-        return f"<User ({self.id}) {self.name}>"
+# review, user
